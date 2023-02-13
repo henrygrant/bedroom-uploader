@@ -1,5 +1,5 @@
 <script lang="ts">
-	let result, fileinput: HTMLInputElement;
+	let fileinput: HTMLInputElement;
 
 	const onFileSelected = (e: Event) => {
 		let file = e?.target?.files[0];
@@ -7,15 +7,13 @@
 		const fileName = Math.random().toString(36).slice(-6) + e?.target?.files[0].name;
 		reader.readAsArrayBuffer(file);
 		reader.onload = async (e) => {
-			console.log(e);
 			const content = e.target?.result;
-			console.log(content);
 			const CHUNK_SIZE = 3000000;
 			const totalChunks = e?.target?.result?.byteLength / CHUNK_SIZE;
 			console.log(`total chunks: ${totalChunks}`);
 			for (let chunk = 0; chunk < totalChunks; chunk++) {
 				let CHUNK = content?.slice(chunk * CHUNK_SIZE, (chunk + 1) * CHUNK_SIZE);
-				console.log(`starting chunk #${chunk}, ${CHUNK}`);
+				console.log(`starting chunk #${chunk}`);
 				await fetch(`/?${new URLSearchParams({ fn: fileName })}`, {
 					method: 'POST',
 					headers: {
@@ -26,7 +24,6 @@
 				});
 				console.log(`ending chunk #${chunk}`);
 			}
-			console.log('done');
 		};
 	};
 </script>
